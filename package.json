@@ -1,7 +1,6 @@
 {
-  "name": "sample-template-nestjs",
+  "name": "gran-store-backend",
   "version": "1.0.0",
-  "description": "Sample template nestjs with some frequent features",
   "author": "Maphstay",
   "private": true,
   "license": "MIT",
