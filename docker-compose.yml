@@ -6,11 +6,11 @@ networks:
     driver: bridge
 
 services:
-  sample_template_db:
+  tmdb_db:
     image: postgres:15
     restart: always
     env_file: .env
-    container_name: sample_template_db
+    container_name: tmdb_db
     environment:
       POSTGRES_DB: ${PGSQL_NAME}
       POSTGRES_PASSWORD: ${PGSQL_PASSWORD}
@@ -22,9 +22,9 @@ services:
     networks:
       - internal_network
 
-  sample_template_nestjs:
+  tmdb:
     image: node:18.16.0-alpine3.17
-    container_name: sample_template_nestjs
+    container_name: tmdb_nestjs
     working_dir: /usr/src/app
     env_file: .env
     restart: always

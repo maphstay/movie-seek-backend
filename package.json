@@ -1,7 +1,7 @@
 {
-  "name": "gran-store-backend",
-  "version": "1.0.0",
-  "author": "Maphstay",
+  "name": "tmdb-backend",
+  "version": "0.0.1",
+  "author": "Stefferson Fernandes",
   "private": true,
   "license": "MIT",
   "engines": {
