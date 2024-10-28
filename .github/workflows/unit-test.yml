@@ -14,7 +14,7 @@ jobs:
         with:
           node-version: 20
 
-      - name: 📦 Installing the dependencies from package.json
+      - name: 📦 Installing dependencies from package.json
         run: yarn --frozen-lockfile
 
       - name: 💥 Running unit tests
