@@ -1,40 +1,45 @@
-version: '3.7'
-
 networks:
-  internal_network:
-    name: internal_network
+  movie_seek_network:
+    name: movie_seek_network
     driver: bridge
 
 services:
-  tmdb_db:
-    image: postgres:15
+  movie_seek_db:
+    image: postgres:16-alpine
     restart: always
     env_file: .env
-    container_name: tmdb_db
+    container_name: movie_seek_db
     environment:
       POSTGRES_DB: ${PGSQL_NAME}
       POSTGRES_PASSWORD: ${PGSQL_PASSWORD}
       POSTGRES_USER: ${PGSQL_USER}
     volumes:
       - ./pgdata:/var/lib/postgresql/data
+      - ./src/database/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - ${PGSQL_PORT}:${PGSQL_PORT}
     networks:
-      - internal_network
+      - movie_seek_network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${PGSQL_USER} -d ${PGSQL_NAME}']
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
-  tmdb:
-    image: node:18.16.0-alpine3.17
-    container_name: tmdb_nestjs
+  movie_seek_api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+    image: movie_seek_api_image
+    container_name: movie_seek_api_container
     working_dir: /usr/src/app
     env_file: .env
     restart: always
-    command: sh -c "yarn && yarn build && yarn start:dev"
+    command: sh -c "yarn start:docker"
     ports:
       - ${API_PORT}:${API_PORT}
     depends_on:
-      - sample_template_db
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - movie_seek_db
     networks:
-      - internal_network
+      - movie_seek_network

@@ -6,12 +6,13 @@ import * as basicAuth from 'express-basic-auth';
 
 async function bootstrap() {
   const port = process.env.API_PORT || 8000;
+  const apiVersion = process.env.API_VERSION || 'v1';
   const app = await NestFactory.create(AppModule);
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix(`api/${apiVersion}`);
 
   app.use(
-    ['/api/docs'],
+    [`/api/${apiVersion}/docs`],
     basicAuth({
       challenge: true,
       users: {
@@ -21,14 +22,14 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Sample template nestjs API Doc')
+    .setTitle('Movies Seek API Doc')
     .setDescription("It's an API documentation")
     .setVersion('1.0')
     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup(`/api/${apiVersion}/docs`, app, document);
 
   app.useGlobalPipes(
     new ValidationPipe({

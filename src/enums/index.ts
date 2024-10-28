@@ -1,4 +1,4 @@
-export enum RoleEnum {
-  ADMIN = 'admin',
-  USER = 'user',
+export enum indexHistoryStatusEnum {
+  SUCCESS = 'success',
+  FAILED = 'failed',
 }

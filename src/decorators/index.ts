@@ -9,6 +9,9 @@ import {
   ApiForbiddenResponse,
   ApiConflictResponse,
   ApiBearerAuth,
+  ApiAcceptedResponse,
+  ApiTooManyRequestsResponse,
+  ApiNotFoundResponse,
 } from '@nestjs/swagger';
 
 /**
@@ -52,6 +55,29 @@ export const ApiCustomCreatedResponse = (options: { message: string; description
   return applyDecorators(
     ApiCreatedResponse({
       description: options?.description || 'Created',
+      schema: {
+        type: 'object',
+        properties: {
+          message: {
+            type: 'string',
+            example: options.message,
+          },
+        },
+      },
+    }),
+  );
+};
+
+/**
+ * Decorator function for defining a custom Accepted response in Swagger/OpenAPI documentation.
+ * @param {object} options - Configuration options for the Accepted response.
+ * @param {any} options.type - The type of the response data.
+ * @param {string} [options.description] - The description of the Accepted response.
+ */
+export const ApiCustomAcceptedResponse = (options: { message?: string; description?: string }) => {
+  return applyDecorators(
+    ApiAcceptedResponse({
+      description: options?.description || 'Accepted',
       schema: {
         type: 'object',
         properties: {
@@ -160,6 +186,37 @@ export const ApiCustomForbiddenResponse = (options?: { message?: string; descrip
 };
 
 /**
+ * Decorator function for defining a custom Not Found request response in Swagger/OpenAPI documentation.
+ * @param {object} [options] - Optional configuration options.
+ * @param {string} [options.message='Not Found'] - The Not Found message to be included in the response schema.
+ * @param {string} [options.description='Not Found request'] - The description of the Not Found request response.
+ */
+export const ApiCustomNotFoundResponse = (options?: { message?: string; description?: string }) => {
+  return applyDecorators(
+    ApiNotFoundResponse({
+      description: options?.description || 'Not Found request',
+      schema: {
+        type: 'object',
+        properties: {
+          statusCode: {
+            type: 'number',
+            default: 404,
+          },
+          message: {
+            type: 'array',
+            default: options?.message ? [options.message] : ['Not Found'],
+          },
+          error: {
+            type: 'string',
+            default: 'Not Found',
+          },
+        },
+      },
+    }),
+  );
+};
+
+/**
  * Decorator function for defining a custom Conflict request response in Swagger/OpenAPI documentation.
  * @param {object} [options] - Optional configuration options.
  * @param {string} [options.message='Conflict exception'] - The conflict message to be included in the response schema.
@@ -183,6 +240,37 @@ export const ApiCustomConflictResponse = (options?: { message?: string; descript
           error: {
             type: 'string',
             default: 'Conflict',
+          },
+        },
+      },
+    }),
+  );
+};
+
+/**
+ * Decorator function for defining a custom Too Many Requests request response in Swagger/OpenAPI documentation.
+ * @param {object} [options] - Optional configuration options.
+ * @param {string} [options.message='Too Many Requests exception'] - The conflict message to be included in the response schema.
+ * @param {string} [options.description='Too Many Requests exception'] - The description of the conflict request response.
+ */
+export const ApiCustomTooManyRequestsResponse = (options?: { message?: string; description?: string }) => {
+  return applyDecorators(
+    ApiTooManyRequestsResponse({
+      description: options?.description || 'Too Many Requests exception',
+      schema: {
+        type: 'object',
+        properties: {
+          statusCode: {
+            type: 'number',
+            default: 429,
+          },
+          message: {
+            type: 'array',
+            default: options?.message ? [options.message] : ['Too Many Requests exception'],
+          },
+          error: {
+            type: 'string',
+            default: 'Too Many Requests',
           },
         },
       },

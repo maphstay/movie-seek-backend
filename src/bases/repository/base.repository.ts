@@ -6,8 +6,10 @@ import {
   FindOneOptions,
   UpdateResult,
   DeleteResult,
+  InsertResult,
 } from 'typeorm';
 import { IBaseRepository } from './base-repository.interface';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export class BaseRepository<T> implements IBaseRepository<T> {
   private entity: Repository<T>;
@@ -40,6 +42,13 @@ export class BaseRepository<T> implements IBaseRepository<T> {
     const updatedEntity = await this.entity.create(partialEntity);
     await this.entity.update(id, updatedEntity as any);
     return this.entity.findOneBy(id);
+  }
+
+  public async upsert(
+    data: QueryDeepPartialEntity<T> | QueryDeepPartialEntity<T>[],
+    conflictPaths: string[],
+  ): Promise<InsertResult> {
+    return await this.entity.upsert(data, { conflictPaths, skipUpdateIfNoValuesChanged: true });
   }
 
   public async softDelete(id: string): Promise<UpdateResult> {

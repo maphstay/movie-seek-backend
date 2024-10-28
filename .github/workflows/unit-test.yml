@@ -1,0 +1,21 @@
+name: Unit Test
+
+on: ['pull_request']
+
+jobs:
+  Unit_Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📂 Checking repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Installing Node v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 📦 Installing the dependencies from package.json
+        run: yarn --frozen-lockfile
+
+      - name: 💥 Running unit tests
+        run: yarn test

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IPaginationMetaData } from '@interfaces/index';
+import { IPaginationMetaData } from 'src/interfaces/index';
 
 export class PaginatedResponseDto implements IPaginationMetaData {
   @ApiProperty({

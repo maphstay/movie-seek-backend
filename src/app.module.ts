@@ -1,8 +1,11 @@
-import { dataSourceOptions } from '@database/data-source';
-import { AuthModule } from '@modules/auth/auth.module';
-import { UserModule } from '@modules/user/user.module';
+import { getDataSourceOptions } from '@database/data-source';
+import { ErrorHandlingModule } from '@modules/error-handling/error-handling.module';
+import { IndexHistoryModule } from '@modules/index-history/index-history.module';
+import { MovieModule } from '@modules/movie/movie.module';
+import { RequestModule } from '@modules/request/request.module';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
@@ -11,9 +14,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       isGlobal: true,
       cache: true,
     }),
-    TypeOrmModule.forRoot(dataSourceOptions),
-    AuthModule,
-    UserModule,
+    EventEmitterModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => getDataSourceOptions(configService),
+    }),
+    ErrorHandlingModule,
+    IndexHistoryModule,
+    MovieModule,
+    RequestModule,
   ],
 })
 export class AppModule {}
